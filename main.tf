@@ -47,7 +47,8 @@ resource "aws_instance" "blog" {
 }
 
 module "alb" {
-  source = "terraform-aws-modules/alb/aws"
+  source  = "terraform-aws-modules/alb/aws"
+  version = "~>6.0"
 
   name    = "blog-alb"
 
@@ -55,13 +56,13 @@ module "alb" {
 
   vpc_id             = module.blog_vpc.vpc_id
   subnets            = module.blog_vpc.public_subnets
-  security_groups    = module.blog_sg.security_id
+  security_groups    = module.blog_sg.security_group_id
 
   target_groups = [
     {
-      name_prefix      = "blog."
+      name_prefix      = "blog-"
       backend_protocol = "HTTP"
-      backendport      = 80
+      backend_port      = 80
       target_type      = "instance"
       targets = {
         my_target = {
